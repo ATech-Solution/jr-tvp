@@ -1,0 +1,82 @@
+name: Distribute To Development
+
+on:
+  push:
+    branches: [ development ]
+
+jobs:
+  distribute-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+
+      - name: Cache Ruby - Bundler
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
+      - name: Cache Gradle
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches/
+          key: cache-clean-gradle-${{ matrix.os }}-${{ matrix.jdk }}
+
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/wrapper/
+          key: cache-clean-wrapper-${{ matrix.os }}-${{ matrix.jdk }}
+
+      - name: Grant Permission to Execute
+        run: chmod +x gradlew
+
+      - name: Install bundle
+        run: |
+          gem install bundler:2.1.4
+          bundle update --bundler
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+
+      - name: Update fastlane and plugins
+        run: |
+          bundle exec fastlane update_fastlane
+          bundle exec fastlane update_plugins
+
+      - name: Deploy Development Debug APK to Firebase App Distribution
+        run: bundle exec fastlane android buildDev
+        env:
+          PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          FIREBASE_APP_ID_DEV: ${{ secrets.FIREBASE_APP_ID_DEV }}
+          FIREBASE_APP_ID_STAGING: ${{ secrets.FIREBASE_APP_ID_STAGING }}
+          FIREBASE_APP_ID_PROD: ${{ secrets.FIREBASE_APP_ID_PROD }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_TESTER_GROUPS_DEV: FirebaseAppDistributionConfig/groups_dev.txt
+          FIREBASE_RELEASE_NOTES_DEV: FirebaseAppDistributionConfig/release_notes_dev.txt
+          FIREBASE_TESTER_GROUPS: FirebaseAppDistributionConfig/groups.txt
+          FIREBASE_RELEASE_NOTES: FirebaseAppDistributionConfig/release_notes.txt
+
+      - name: Deploy Production Debug APK to Firebase App Distribution
+        run: bundle exec fastlane android buildStaging
+        env:
+          PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          FIREBASE_APP_ID_DEV: ${{ secrets.FIREBASE_APP_ID_DEV }}
+          FIREBASE_APP_ID_STAGING: ${{ secrets.FIREBASE_APP_ID_STAGING }}
+          FIREBASE_APP_ID_PROD: ${{ secrets.FIREBASE_APP_ID_PROD }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_TESTER_GROUPS_DEV: FirebaseAppDistributionConfig/groups_dev.txt
+          FIREBASE_RELEASE_NOTES_DEV: FirebaseAppDistributionConfig/release_notes_dev.txt
+          FIREBASE_TESTER_GROUPS: FirebaseAppDistributionConfig/groups.txt
+          FIREBASE_RELEASE_NOTES: FirebaseAppDistributionConfig/release_notes.txt

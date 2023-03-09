@@ -1,0 +1,94 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
+def props = new Properties()
+props.load(new FileInputStream(file("$rootProject.projectDir/app/config.properties")))
+
+android {
+    compileSdkVersion versions.compileSdk
+
+    def versionCodeFile = file("$rootProject.projectDir/version.properties")
+    def code = 1
+
+    if (versionCodeFile.canRead()) {
+        Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionCodeFile))
+        code = versionProps['VERSION_CODE'].toInteger()
+    }
+
+    defaultConfig {
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode code
+        versionName "0.0." + code.toString()
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../keys/atech-keystore.jks")
+            storePassword "atech2021"
+            keyAlias "release"
+            keyPassword "atech2021"
+        }
+        release {
+            storeFile file("../keys/atech-keystore.jks")
+            storePassword "atech2021"
+            keyAlias "release"
+            keyPassword "atech2021"
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "env"
+    productFlavors {
+        development {
+            dimension "env"
+            applicationIdSuffix '.dev'
+            resValue "string", "app_name", "@string/app_name_dev"
+            buildConfigField("String", "API_BASE_URL", props.getProperty("env.dev.baseurl"))
+            buildConfigField("String", "API_MOCK_BASE_URL", props.getProperty("env.dev.mockbaseurl"))
+        }
+        staging {
+            dimension "env"
+            applicationIdSuffix '.staging'
+            resValue "string", "app_name", "@string/app_name_staging"
+            buildConfigField("String", "API_BASE_URL", props.getProperty("env.staging.baseurl"))
+        }
+        production {
+            dimension "env"
+            resValue "string", "app_name", "@string/app_name_prod"
+            buildConfigField("String", "API_BASE_URL", props.getProperty("env.prod.baseurl"))
+        }
+    }
+}

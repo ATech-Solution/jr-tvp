@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/nav_graph_home"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.atech.feature_home.presentation.fragment.HomeFragment">
+        <action
+            android:id="@+id/action_homeFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+        <argument
+            android:name="title"
+            android:defaultValue="Home Page"
+            app:argType="string" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.atech.feature_home.presentation.fragment.DetailFragment">
+
+        <argument
+            android:name="title"
+            android:defaultValue="Next Page"
+            app:argType="string" />
+
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="example://next/exampleArgs?title={msg}" />
+    </fragment>
+
+</navigation>

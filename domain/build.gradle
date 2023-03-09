@@ -1,0 +1,46 @@
+/**
+ * Use plugin here
+ */
+plugins {
+    id 'dagger.hilt.android.plugin'
+}
+
+/**
+ * Default configuration
+ * for every android libraries module gradle
+ */
+apply from: "$rootProject.projectDir/buildsystem/android_library_default.gradle"
+
+/**
+ * Default dependencies, make sure it used
+ * in all of the modules
+ *
+ * Core Libraries:
+ * - Core KTX
+ * - App Compat
+ * - Material Design
+ * - Constraint Layout
+ * - Swipe Refresh Layout
+ * - Navigation
+ * - Retrofit
+ * - OK HTTP
+ * - Glide
+ * - RX Java
+ * - Room Database
+ * - Dagger Hilt
+ * - Firebase
+ *
+ * Logging:
+ * - Timber logging
+ * - Chucker
+ * - Chucker No-Op
+ *
+ * Testing:
+ * - JUnit
+ * - Google Truth
+ * - Espresso
+ * - Coroutines Testing
+ * - Dagger Hilt Testing
+ * - Runner
+ */
+apply from: "$rootProject.projectDir/buildsystem/default_dependencies.gradle"

@@ -1,0 +1,98 @@
+default_platform(:android)
+
+platform :android do
+
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  scheme = nil
+  output = nil
+
+  desc "Build Dev"
+  lane :buildDev do
+    scheme = "Development"
+    output = "development"
+    build
+  end
+
+  desc "Build Staging"
+  lane :buildStaging do
+    scheme = "Staging"
+    output = "staging"
+    build
+  end
+
+  desc "Build Production"
+  lane :buildProd do
+    scheme = "Production"
+    output = "production"
+    build
+  end
+
+  desc "Build bundle and Create APK for #{scheme}"
+  lane :build do
+    gradle(
+        task: "clean bundle",
+        flavor:"#{scheme}",
+        build_type: "Release",
+        print_command: true,
+        properties: {
+          "android.injected.signing.store.file" => "keys/atech-keystore.jks",
+          "android.injected.signing.store.password" => ENV['KEYSTORE_PASSWORD'],
+          "android.injected.signing.key.alias" => ENV['KEYSTORE_ALIAS'],
+          "android.injected.signing.key.password" => ENV['KEYSTORE_PASSWORD'],
+        }
+    )
+
+    bundletool(
+        ks_path: "keys/atech-keystore.jks",
+        ks_password: ENV['KEYSTORE_PASSWORD'],
+        ks_key_alias: ENV['KEYSTORE_ALIAS'],
+        ks_key_alias_password: ENV['KEYSTORE_PASSWORD'],
+        bundletool_version: '1.5.0',
+        aab_path: "app/build/outputs/bundle/#{output}Release/app-#{output}-release.aab",
+        apk_output_path: "app/build/outputs/apk/#{output}/release/app-#{output}-universal-release.apk",
+        verbose: true
+    )
+
+    if scheme == "Production"
+        deploy
+    elsif scheme == "Staging"
+        deploy_to_firebase_prod
+    else
+        deploy_to_firebase_dev
+    end
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
+  end
+
+  desc "Deploy DEV to Firebase App Distribution"
+  lane :deploy_to_firebase_dev do
+    firebase_app_distribution(
+       app: ENV['FIREBASE_APP_ID_DEV'],
+       apk_path: "app/build/outputs/apk/#{output}/release/app-#{output}-universal-release.apk",
+       firebase_cli_token: ENV['FIREBASE_TOKEN'],
+       groups_file: ENV['FIREBASE_TESTER_GROUPS_DEV'],
+       release_notes_file: ENV['FIREBASE_RELEASE_NOTES_DEV'],
+    )
+  end
+
+  desc "Deploy PROD env to Firebase App Distribution"
+    lane :deploy_to_firebase_prod do
+      firebase_app_distribution(
+         app: ENV['FIREBASE_APP_ID_STAGING'],
+         apk_path: "app/build/outputs/apk/#{output}/release/app-#{output}-universal-release.apk",
+         firebase_cli_token: ENV['FIREBASE_TOKEN'],
+         groups_file: ENV['FIREBASE_TESTER_GROUPS'],
+         release_notes_file: ENV['FIREBASE_RELEASE_NOTES']
+      )
+    end
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
+  end
+end

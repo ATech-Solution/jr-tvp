@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SectionView">
+        <attr name="svModule" format="enum">
+            <enum name="popular" value="0" />
+            <enum name="topRated" value="1" />
+            <enum name="nowPlaying" value="2" />
+            <enum name="favorite" value="3" />
+        </attr>
+        <attr name="svLabel" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="HeaderView">
+        <attr name="hvModule" format="enum">
+            <enum name="popular" value="0" />
+            <enum name="topRated" value="1" />
+            <enum name="nowPlaying" value="2" />
+            <enum name="favorite" value="3" />
+        </attr>
+        <attr name="hvLabel" format="string" />
+    </declare-styleable>
+</resources>

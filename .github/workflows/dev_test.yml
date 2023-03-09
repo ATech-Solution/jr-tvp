@@ -1,0 +1,30 @@
+name: Build Development
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  pull_request:
+    branches: [ development ]
+
+jobs:
+  # TODO: Add Unit Test and Lint Test here
+  generate-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-development-debug.apk
+          path: app/build/outputs/apk/development/debug/app-development-debug.apk

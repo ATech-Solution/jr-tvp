@@ -1,0 +1,49 @@
+dependencies {
+    implementation libraries.coreKtx
+    implementation libraries.appCompat
+    implementation libraries.material
+    implementation libraries.constraintLayout
+    implementation libraries.swipeRefreshlayout
+
+    // Navigation
+    implementation libraries.navigation
+
+    // Network
+    implementation libraries.retrofit
+    implementation libraries.okHttp
+
+    // Image Libraries
+    implementation libraries.glide
+
+    // Rx Java
+    implementation libraries.rxJava
+
+    // Room Database
+    implementation libraries.room
+    kapt annotationProcessors.roomCompiler
+
+    // Hilt
+    implementation libraries.hilt
+    kapt annotationProcessors.hiltCompiler
+
+    // Firebase
+    implementation platform(libraries.firebaseBom)
+    implementation libraries.firebase
+
+    // Logs
+    implementation libraries.timber
+    debugImplementation libraries.chucker
+    releaseImplementation libraries.chuckerNoOp
+
+    // Testing
+    testImplementation testingLibraries.jUnit
+    testImplementation testingLibraries.truth
+    androidTestImplementation testingLibraries.jUnit
+    androidTestImplementation testingLibraries.espresso
+    androidTestImplementation testingLibraries.truth
+    androidTestImplementation testingLibraries.coreTesting
+    androidTestImplementation testingLibraries.coroutinesTesting
+    androidTestImplementation testingLibraries.hiltTesting
+    androidTestImplementation testingLibraries.runnerTesting
+    kaptAndroidTest annotationProcessors.hiltCompiler
+}
