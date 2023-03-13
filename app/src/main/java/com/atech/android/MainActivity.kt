@@ -2,6 +2,8 @@ package com.atech.android
 
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.atech.android.databinding.ActivityMainBinding
@@ -21,10 +23,20 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         navigator.navController = navController
 
         binding.navView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.navView.isVisible = mainVisibilityCheck(destination)
+        }
+    }
+
+    private fun mainVisibilityCheck(destination: NavDestination): Boolean {
+        return destination.id in listOf(
+            R.id.homeFragment,
+            R.id.profileFragment
+        )
     }
 
     override fun onInitObservers() = Unit
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

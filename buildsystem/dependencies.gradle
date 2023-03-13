@@ -33,6 +33,10 @@ ext {
             coreTesting       : '2.1.0',
             coroutinesTesting : '1.6.1',
             runner            : '1.4.0',
+            barcodeScanner    : '16.0.1',
+            cameraX           : '1.0.0-beta06',
+            cameraXView       : '1.0.0-alpha13',
+            qrGenerator       : '1.0.1'
     ]
 
     libraries = [
@@ -127,7 +131,26 @@ ext {
              */
             timber            : "com.jakewharton.timber:timber:${versions.timber}",
             chucker           : "com.github.chuckerteam.chucker:library:${versions.chucker}",
-            chuckerNoOp       : "com.github.chuckerteam.chucker:library-no-op:${versions.chucker}"
+            chuckerNoOp       : "com.github.chuckerteam.chucker:library-no-op:${versions.chucker}",
+
+            /**
+             * Barcode scanner
+             * */
+            barcodeScanner    : "com.google.mlkit:barcode-scanning:${versions.barcodeScanner}",
+
+            /**
+             * QR Generator
+             * */
+            qrGenerator       : "com.github.androidmads:QRGenerator:${versions.qrGenerator}",
+
+            /**
+             * Camera X
+             * */
+            cameraX           : [
+                    "androidx.camera:camera-camera2:${versions.cameraX}",
+                    "androidx.camera:camera-lifecycle:${versions.cameraX}",
+                    "androidx.camera:camera-view:${versions.cameraXView}"
+            ]
     ]
 
     annotationProcessors = [

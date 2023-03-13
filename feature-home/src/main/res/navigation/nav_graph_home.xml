@@ -7,28 +7,30 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.atech.feature_home.presentation.fragment.HomeFragment">
-        <action
-            android:id="@+id/action_homeFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+
         <argument
             android:name="title"
             android:defaultValue="Home Page"
             app:argType="string" />
 
+        <action
+            android:id="@+id/action_homeFragment_to_qrScannerFragment"
+            app:destination="@id/qrScannerFragment" />
+
+        <action
+            android:id="@+id/action_homeFragment_to_qrGeneratorFragment"
+            app:destination="@id/qrGeneratorFragment" />
+
     </fragment>
 
     <fragment
-        android:id="@+id/detailFragment"
-        android:name="com.atech.feature_home.presentation.fragment.DetailFragment">
+        android:id="@+id/qrScannerFragment"
+        android:name="com.atech.feature_home.presentation.fragment.QrScannerFragment"
+        android:label="QrScannerFragment" />
 
-        <argument
-            android:name="title"
-            android:defaultValue="Next Page"
-            app:argType="string" />
-
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="example://next/exampleArgs?title={msg}" />
-    </fragment>
+    <fragment
+        android:id="@+id/qrGeneratorFragment"
+        android:name="com.atech.feature_home.presentation.fragment.QrGeneratorFragment"
+        android:label="QrGeneratorFragment" />
 
 </navigation>
