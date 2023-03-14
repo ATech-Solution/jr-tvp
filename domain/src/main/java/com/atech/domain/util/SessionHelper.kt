@@ -3,8 +3,8 @@ package com.atech.domain.util
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
+@Suppress("unused")
 class SessionHelper constructor(context: Context, private val gson: Gson) {
 
     private val pref: SharedPreferences =
@@ -36,12 +36,11 @@ class SessionHelper constructor(context: Context, private val gson: Gson) {
         pref.edit().putString(key, gson.toJson(any)).apply()
     }
 
-    fun <T> getObject(key: String, defaultObject: T? = null): T? {
+    fun <T> getObject(key: String, classType: Class<T>? = null): T? {
         return try {
-            val tt = object : TypeToken<T>() {}.type
-            gson.fromJson<T>(pref.getString(key, null), tt)
+            gson.fromJson(pref.getString(key, null), classType)
         } catch (exception: Exception) {
-            defaultObject
+            null
         }
     }
 
@@ -51,5 +50,6 @@ class SessionHelper constructor(context: Context, private val gson: Gson) {
 
         private const val PREF_NAME: String = "AtechApp"
         const val ACCESS_TOKEN_KEY = "ACCESS_TOKEN_KEY"
+        const val LOGIN_RESPONSE = "LOGIN_RESPONSE"
     }
 }

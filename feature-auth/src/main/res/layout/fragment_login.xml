@@ -32,14 +32,16 @@
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_password"
-        android:layout_margin="20dp"
-        android:padding="8dp"
-        android:hint="Password"
-        android:background="@drawable/gray_border"
-        app:layout_constraintTop_toBottomOf="@id/et_username"
-        app:layout_constraintBottom_toTopOf="@id/btn_login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/gray_border"
+        android:hint="Password"
+        android:padding="8dp"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@id/btn_login"
+        app:layout_constraintTop_toBottomOf="@id/et_username"
+        tools:layout_editor_absoluteX="20dp" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_login"

@@ -23,5 +23,5 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideMovieDao(appDatabase: AppDatabase) = appDatabase.movieDao()
+    fun provideMovieDao(appDatabase: AppDatabase) = appDatabase.jrDao()
 }
