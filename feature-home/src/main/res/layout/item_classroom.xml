@@ -48,7 +48,7 @@
         android:id="@+id/txt_action"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:text="Enroll Now" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

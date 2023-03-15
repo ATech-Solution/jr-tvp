@@ -5,8 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.atech.feature_home.databinding.ItemClassroomBinding
+import com.atech.feature_home.databinding.ItemScheduleBinding
 
-class ClassroomAdapter(
+class ScheduleAdapter(
     private val onClickItem: (Int) -> Unit
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -23,8 +24,8 @@ class ClassroomAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemClassroomBinding.inflate(inflater, parent,false)
-        return ClassroomItemViewHolder(binding)
+        val binding = ItemScheduleBinding.inflate(inflater, parent,false)
+        return ScheduleItemViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -32,14 +33,14 @@ class ClassroomAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ClassroomItemViewHolder).bind(data[position])
-        holder.itemClassroomBinding.root.setOnClickListener {
+        (holder as ScheduleItemViewHolder).bind(data[position])
+        holder.itemScheduleBinding.root.setOnClickListener {
             onClickItem.invoke(data[position])
         }
     }
 
-    inner class ClassroomItemViewHolder(val itemClassroomBinding: ItemClassroomBinding) :
-        RecyclerView.ViewHolder(itemClassroomBinding.root) {
+    inner class ScheduleItemViewHolder(val itemScheduleBinding: ItemScheduleBinding) :
+        RecyclerView.ViewHolder(itemScheduleBinding.root) {
 
         fun bind(model: Int) {
 

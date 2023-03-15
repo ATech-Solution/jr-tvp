@@ -2,18 +2,18 @@ package com.atech.feature_home.presentation.fragment
 
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.atech.base.BaseFragment
 import com.atech.base.viewmodel.BaseViewModel
 import com.atech.feature_home.databinding.FragmentHomeBinding
+import com.atech.feature_home.presentation.adapter.ClassroomAdapter
 import com.atech.feature_home.presentation.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.scopes.FragmentScoped
 
 @FragmentScoped
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding, BaseViewModel>(),
-    SwipeRefreshLayout.OnRefreshListener {
+class HomeFragment : BaseFragment<FragmentHomeBinding, BaseViewModel>() {
 
     override val viewModel: HomeViewModel by viewModels()
 
@@ -36,14 +36,24 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, BaseViewModel>(),
 //                    .actionHomeFragmentToQrGeneratorFragment()
 //            )
 //        }
+        initRecyclerViewAdapter()
+    }
+
+    private fun initRecyclerViewAdapter() {
+        binding.rvClass.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = ClassroomAdapter {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToDialogClassroomDetailFragment()
+                )
+            }.apply {
+                updateData(listOf(1, 2, 3, 4))
+            }
+        }
     }
 
     override fun onInitObservers() {
         super.onInitObservers()
-    }
-
-    override fun onRefresh() {
-
     }
 
 }

@@ -14,12 +14,8 @@
             app:argType="string" />
 
         <action
-            android:id="@+id/action_homeFragment_to_qrScannerFragment"
-            app:destination="@id/qrScannerFragment" />
-
-        <action
-            android:id="@+id/action_homeFragment_to_qrGeneratorFragment"
-            app:destination="@id/qrGeneratorFragment" />
+            android:id="@+id/action_homeFragment_to_dialogClassroomDetailFragment"
+            app:destination="@id/dialogClassroomDetailFragment" />
 
     </fragment>
 
@@ -32,5 +28,20 @@
         android:id="@+id/qrGeneratorFragment"
         android:name="com.atech.feature_home.presentation.fragment.QrGeneratorFragment"
         android:label="QrGeneratorFragment" />
+
+    <dialog
+        android:id="@+id/dialogClassroomDetailFragment"
+        android:name="com.atech.feature_home.presentation.fragment.DialogClassroomDetailFragment"
+        android:label="DialogClassroomDetailFragment" >
+
+        <action
+            android:id="@+id/action_dialogClassroomDetailFragment_to_qrGeneratorFragment"
+            app:destination="@id/qrGeneratorFragment" />
+
+        <action
+            android:id="@+id/action_dialogClassroomDetailFragment_to_qrScannerFragment"
+            app:destination="@id/qrScannerFragment" />
+
+    </dialog>
 
 </navigation>

@@ -6,15 +6,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/tvTitlePage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_profile"
+        android:layout_margin="18dp"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:srcCompat="@color/black"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_margin="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="@string/hello_blank_fragment" />
+        app:layout_constraintTop_toBottomOf="@id/img_profile"
+        android:id="@+id/txt_name"
+        android:textSize="18sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Class List" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_margin="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_name"
+        android:id="@+id/txt_user_type"
+        android:textSize="18sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Student" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_margin="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_user_type"
+        android:id="@+id/txt_remaining_class"
+        android:textSize="18sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Remaining Class: 1" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_logout"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="18dp"
+        android:layout_margin="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_remaining_class"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

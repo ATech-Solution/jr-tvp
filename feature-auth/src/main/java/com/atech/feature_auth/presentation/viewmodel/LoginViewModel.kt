@@ -28,12 +28,9 @@ class LoginViewModel @Inject constructor(
             SessionHelper.LOGIN_RESPONSE,
             LoginResponseModel::class.java
         )
-//        if (loginResponse != null) {
-//            _loginResponse.value = ResultState.Success(loginResponse)
-//        }
-        _loginResponse.value = ResultState.Success(
-            LoginResponseModel("", "", "")
-        )
+        if (loginResponse != null) {
+            _loginResponse.value = ResultState.Success(loginResponse)
+        }
     }
 
     fun login(username: String, password: String) {
