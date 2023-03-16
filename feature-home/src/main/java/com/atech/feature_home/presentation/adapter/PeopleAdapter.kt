@@ -4,17 +4,17 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.atech.feature_home.databinding.ItemClassroomBinding
+import com.atech.domain.entities.StudentsModelItem
 import com.atech.feature_home.databinding.ItemPeopleBinding
 
 class PeopleAdapter(
-    private val onClickItem: (Int) -> Unit
+    private val onClickItem: (StudentsModelItem) -> Unit
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val data = mutableListOf<Int>()
+    private val data = mutableListOf<StudentsModelItem>()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(data: List<Int>) {
+    fun updateData(data: List<StudentsModelItem>) {
         this.data.apply {
             clear()
             addAll(data)
@@ -42,8 +42,8 @@ class PeopleAdapter(
     inner class PeopleItemViewHolder(val itemPeopleBinding: ItemPeopleBinding) :
         RecyclerView.ViewHolder(itemPeopleBinding.root) {
 
-        fun bind(model: Int) {
-
+        fun bind(model: StudentsModelItem) {
+            itemPeopleBinding.txtName.text = model.name
         }
 
     }

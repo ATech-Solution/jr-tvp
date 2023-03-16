@@ -1,8 +1,6 @@
 package com.atech.data.datasource
 
-import com.atech.data.dtos.LoginDto
-import com.atech.data.dtos.LoginResponseDto
-import com.atech.data.dtos.MessageDto
+import com.atech.data.dtos.*
 import com.atech.data.remote.JrApi
 import com.atech.domain.util.SessionHelper
 import io.reactivex.Flowable
@@ -20,5 +18,25 @@ class DataSourceImpl @Inject constructor(
 
     override fun logout(): Flowable<MessageDto> {
         return api.logout()
+    }
+
+    override fun getTeacherClassSchedules(): Flowable<BaseResponseDto<ClassSchedulesDto>> {
+        return api.getTeacherClassSchedules()
+    }
+
+    override fun getStudents(id: Int): Flowable<BaseResponseDto<StudentsDto>> {
+        return api.getStudents(id)
+    }
+
+    override fun getStudentClassSchedules(): Flowable<BaseResponseDto<ClassSchedulesDto>> {
+        return api.getStudentClassSchedules()
+    }
+
+    override fun showQrCode(): Flowable<BaseResponseDto<QrCodeDto>> {
+        return api.showQrCode()
+    }
+
+    override fun getProfile(): Flowable<BaseResponseDto<ProfileDto>> {
+        return api.getProfile()
     }
 }

@@ -1,10 +1,12 @@
 package com.atech.feature_profile.presentation
 
+import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.atech.base.BaseFragment
+import com.atech.base.util.GlideHelper
 import com.atech.base.viewmodel.BaseViewModel
 import com.atech.domain.subscriber.ResultState
 import com.atech.feature_profile.databinding.FragmentProfileBinding
@@ -25,12 +27,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding, BaseViewModel>() {
 
     override fun onInitViews() {
         super.onInitViews()
-//        findNavController().restoreState(args.toBundle())
-//        binding.tvTitlePage.text = args.title
-//        binding.root.setOnClickListener {
-////            throw RuntimeException("Test Crash")
-//        }
-//        findNavController().saveState()?.putAll(args.toBundle())
         binding.btnLogout.setOnClickListener {
             viewModel.logout()
         }
@@ -38,17 +34,52 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding, BaseViewModel>() {
 
     override fun onInitObservers() {
         super.onInitObservers()
-        viewModel.logoutResponse.observe(viewLifecycleOwner) {
+        viewModel.profileResponse.observe(viewLifecycleOwner) {
             when(it) {
                 is ResultState.Success -> {
-                    findNavController().navigate(ProfileFragmentDirections.actionNavProfileToAuth())
+                    binding.pbLoading.visibility = View.GONE
+                    GlideHelper.showThumbnail(
+                        it.data.avatar,
+                        binding.imgProfile,
+                        requireContext()
+                    )
+                    binding.txtName.text = it.data.name
+                    binding.txtEmail.text = it.data.email
+                    binding.txtAddress.text = it.data.address
                 }
                 is ResultState.Error -> {
+                    binding.pbLoading.visibility = View.GONE
                     Toast.makeText(
                         requireContext(),
                         it.throwable.message,
                         Toast.LENGTH_SHORT)
                         .show()
+                }
+                is ResultState.Loading -> {
+                    binding.pbLoading.visibility = View.VISIBLE
+                }
+                else -> {
+                    //unhandled state
+                }
+            }
+        }
+
+        viewModel.logoutResponse.observe(viewLifecycleOwner) {
+            when(it) {
+                is ResultState.Success -> {
+                    showLoading(false)
+                    findNavController().navigate(ProfileFragmentDirections.actionNavProfileToAuth())
+                }
+                is ResultState.Error -> {
+                    showLoading(false)
+                    Toast.makeText(
+                        requireContext(),
+                        it.throwable.message,
+                        Toast.LENGTH_SHORT)
+                        .show()
+                }
+                is ResultState.Loading -> {
+                    showLoading(true)
                 }
                 else -> {
                     //unhandled state
@@ -57,5 +88,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding, BaseViewModel>() {
         }
     }
 
+    private fun showLoading(show: Boolean) {
+        if (show) {
+            binding.pbLogout.visibility = View.VISIBLE
+            binding.btnLogout.visibility = View.INVISIBLE
+        } else {
+            binding.pbLogout.visibility = View.GONE
+            binding.btnLogout.visibility = View.VISIBLE
+        }
+    }
 
 }

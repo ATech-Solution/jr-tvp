@@ -21,33 +21,66 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_profile"
+        android:id="@+id/txt_name_title"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Name:" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_marginHorizontal="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_name_title"
         android:id="@+id/txt_name"
         android:textSize="18sp"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Class List" />
+        android:layout_height="wrap_content" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_margin="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_name"
-        android:id="@+id/txt_user_type"
+        android:id="@+id/txt_email_title"
         android:textSize="18sp"
+        android:textStyle="bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Student" />
+        android:text="Email:" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_marginHorizontal="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_email_title"
+        android:id="@+id/txt_email"
+        android:textSize="18sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_margin="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_user_type"
-        android:id="@+id/txt_remaining_class"
+        app:layout_constraintTop_toBottomOf="@id/txt_email"
+        android:id="@+id/txt_address_title"
         android:textSize="18sp"
+        android:textStyle="bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Remaining Class: 1" />
+        android:text="Address:" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_marginHorizontal="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_address_title"
+        android:id="@+id/txt_address"
+        android:textSize="18sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_logout"
@@ -56,9 +89,29 @@
         android:layout_margin="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_remaining_class"
+        app:layout_constraintTop_toBottomOf="@id/txt_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Logout" />
+
+    <ProgressBar
+        android:id="@+id/pb_logout"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/btn_logout"
+        app:layout_constraintStart_toStartOf="@id/btn_logout"
+        app:layout_constraintTop_toTopOf="@id/btn_logout"
+        app:layout_constraintBottom_toBottomOf="@id/btn_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txt_name_title"
+        app:layout_constraintBottom_toBottomOf="@id/txt_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,11 +2,14 @@ package com.atech.feature_home.presentation.fragment
 
 import android.graphics.Bitmap
 import android.util.DisplayMetrics
+import android.view.View
+import android.widget.Toast
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.fragment.app.viewModels
 import com.atech.base.BaseFragment
 import com.atech.base.viewmodel.BaseViewModel
+import com.atech.domain.subscriber.ResultState
 import com.atech.feature_home.databinding.FragmentQrGeneratorBinding
 import com.atech.feature_home.presentation.viewmodel.QrGeneratorViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,13 +23,6 @@ class QrGeneratorFragment : BaseFragment<FragmentQrGeneratorBinding, BaseViewMod
     override val viewModel: QrGeneratorViewModel by viewModels()
     override val binding: FragmentQrGeneratorBinding by lazy {
         FragmentQrGeneratorBinding.inflate(layoutInflater)
-    }
-
-    override fun onInitViews() {
-        super.onInitViews()
-        generateQrCode("text barcode")?.let {
-            binding.imgQrCode.setImageBitmap(it)
-        }
     }
 
     @Suppress("deprecation")
@@ -46,6 +42,30 @@ class QrGeneratorFragment : BaseFragment<FragmentQrGeneratorBinding, BaseViewMod
 
     override fun onInitObservers() {
         super.onInitObservers()
+        viewModel.qrResponse.observe(viewLifecycleOwner) {
+            when(it) {
+                is ResultState.Success -> {
+                    binding.pbLoading.visibility = View.GONE
+                    generateQrCode(it.data.qr_code)?.let { bitmap ->
+                        binding.imgQrCode.setImageBitmap(bitmap)
+                    }
+                }
+                is ResultState.Error -> {
+                    binding.pbLoading.visibility = View.GONE
+                    Toast.makeText(
+                        requireContext(),
+                        it.throwable.message,
+                        Toast.LENGTH_SHORT)
+                        .show()
+                }
+                is ResultState.Loading -> {
+                    binding.pbLoading.visibility = View.VISIBLE
+                }
+                else -> {
+                    //unhandled state
+                }
+            }
+        }
     }
 
     companion object {

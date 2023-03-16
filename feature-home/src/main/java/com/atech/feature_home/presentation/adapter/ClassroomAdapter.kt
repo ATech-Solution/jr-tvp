@@ -4,16 +4,17 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.atech.domain.entities.ClassScheduleModelItem
 import com.atech.feature_home.databinding.ItemClassroomBinding
 
 class ClassroomAdapter(
-    private val onClickItem: (Int) -> Unit
+    private val onClickItem: (ClassScheduleModelItem) -> Unit
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val data = mutableListOf<Int>()
+    private val data = mutableListOf<ClassScheduleModelItem>()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(data: List<Int>) {
+    fun updateData(data: List<ClassScheduleModelItem>) {
         this.data.apply {
             clear()
             addAll(data)
@@ -41,8 +42,13 @@ class ClassroomAdapter(
     inner class ClassroomItemViewHolder(val itemClassroomBinding: ItemClassroomBinding) :
         RecyclerView.ViewHolder(itemClassroomBinding.root) {
 
-        fun bind(model: Int) {
-
+        @SuppressLint("SetTextI18n")
+        fun bind(model: ClassScheduleModelItem) {
+            itemClassroomBinding.apply {
+                txtClassTitle.text = "${model.category} - ${model.location}"
+                txtClassDetail.text = model.time_summary
+                txtAction.text = "${model.duration} minutes"
+            }
         }
 
     }

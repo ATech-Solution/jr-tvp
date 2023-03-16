@@ -51,5 +51,6 @@ class SessionHelper constructor(context: Context, private val gson: Gson) {
         private const val PREF_NAME: String = "AtechApp"
         const val ACCESS_TOKEN_KEY = "ACCESS_TOKEN_KEY"
         const val LOGIN_RESPONSE = "LOGIN_RESPONSE"
+        const val USER_PROFILE = "USER_PROFILE"
     }
 }

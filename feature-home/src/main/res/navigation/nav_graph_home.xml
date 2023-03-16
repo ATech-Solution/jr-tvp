@@ -34,6 +34,12 @@
         android:name="com.atech.feature_home.presentation.fragment.DialogClassroomDetailFragment"
         android:label="DialogClassroomDetailFragment" >
 
+        <argument
+            android:name="schedule"
+            android:defaultValue="@null"
+            app:nullable="true"
+            app:argType="com.atech.domain.entities.ClassScheduleModelItem" />
+
         <action
             android:id="@+id/action_dialogClassroomDetailFragment_to_qrGeneratorFragment"
             app:destination="@id/qrGeneratorFragment" />

@@ -34,6 +34,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun login(username: String, password: String) {
+        _loginResponse.value = ResultState.Loading()
         postLogin.execute(
             object : DefaultSubscriber<LoginResponseModel>() {
                 override fun onError(error: ResultState<LoginResponseModel>) {

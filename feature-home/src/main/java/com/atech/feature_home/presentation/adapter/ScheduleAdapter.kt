@@ -4,17 +4,19 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.atech.feature_home.databinding.ItemClassroomBinding
+import com.atech.domain.entities.SchedulesModel
 import com.atech.feature_home.databinding.ItemScheduleBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ScheduleAdapter(
-    private val onClickItem: (Int) -> Unit
+    private val onClickItem: (SchedulesModel) -> Unit
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val data = mutableListOf<Int>()
+    private val data = mutableListOf<SchedulesModel>()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(data: List<Int>) {
+    fun updateData(data: List<SchedulesModel>) {
         this.data.apply {
             clear()
             addAll(data)
@@ -42,9 +44,30 @@ class ScheduleAdapter(
     inner class ScheduleItemViewHolder(val itemScheduleBinding: ItemScheduleBinding) :
         RecyclerView.ViewHolder(itemScheduleBinding.root) {
 
-        fun bind(model: Int) {
-
+        @SuppressLint("SetTextI18n")
+        fun bind(model: SchedulesModel) {
+            itemScheduleBinding.txtSchedule.text = convertDateRange(
+                model.start_time,
+                model.finish_time
+            )
         }
 
+    }
+
+    private fun convertDateRange(startTime: String, endTime: String): String {
+        val oldPattern = "yyyy-MM-dd HH:mm:ss"
+        val yearPattern = "EEE dd MMM"
+        val timePattern = "HH:mm"
+        val oldFormat = SimpleDateFormat(oldPattern, Locale.getDefault())
+        val currentStart = oldFormat.parse(startTime)
+        val currentEnd = oldFormat.parse(endTime)
+        val newYearFormat = SimpleDateFormat(yearPattern, Locale.getDefault())
+        val currentYear = newYearFormat.format(currentStart ?: Date())
+        val newTimeFormat = SimpleDateFormat(timePattern, Locale.getDefault())
+        return "$currentYear, ${newTimeFormat.format(currentStart ?: Date())} - ${
+            newTimeFormat.format(
+                currentEnd ?: Date()
+            )
+        }"
     }
 }

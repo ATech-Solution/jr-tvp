@@ -1,4 +1,4 @@
-package com.atech.feature_auth.internal.di.module
+package com.atech.android.di
 
 import com.atech.domain.PostExecutionThread
 import com.atech.domain.interactors.*

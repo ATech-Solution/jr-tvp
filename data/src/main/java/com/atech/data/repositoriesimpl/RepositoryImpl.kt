@@ -2,8 +2,7 @@ package com.atech.data.repositoriesimpl
 
 import com.atech.data.datasource.DataSource
 import com.atech.data.datasource.StubDataSource
-import com.atech.domain.entities.LoginResponseModel
-import com.atech.domain.entities.MessageModel
+import com.atech.domain.entities.*
 import com.atech.domain.repositories.JrRepository
 import io.reactivex.Flowable
 import javax.inject.Inject
@@ -24,6 +23,26 @@ class RepositoryImpl @Inject constructor(
 
     override fun logout(): Flowable<MessageModel> {
         return source.logout().map { it.toModel() }
+    }
+
+    override fun getTeacherClassSchedules(): Flowable<ClassScheduleModel> {
+        return source.getTeacherClassSchedules().map { it.data.toModel() }
+    }
+
+    override fun getStudents(id: Int): Flowable<StudentsModel> {
+        return source.getStudents(id).map { it.data.toModel() }
+    }
+
+    override fun getStudentClassSchedules(): Flowable<ClassScheduleModel> {
+        return source.getStudentClassSchedules().map { it.data.toModel() }
+    }
+
+    override fun showQrCode(): Flowable<QrCodeModel> {
+        return source.showQrCode().map { it.data.toModel() }
+    }
+
+    override fun getProfile(): Flowable<ProfileModel> {
+        return source.getProfile().map { it.data.toModel() }
     }
 
 }
