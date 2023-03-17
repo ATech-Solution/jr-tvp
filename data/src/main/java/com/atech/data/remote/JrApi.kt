@@ -31,6 +31,11 @@ interface JrApi {
     @GET("/api/student/qr-code")
     fun showQrCode(): Flowable<BaseResponseDto<QrCodeDto>>
 
+    @POST("/api/attend")
+    fun scanQrCode(
+        @Body scanQrCodeDto: ScanQrCodeDto
+    ): Flowable<BaseResponseDto<MessageDto>>
+
     @GET("/api/profile")
     fun getProfile(): Flowable<BaseResponseDto<ProfileDto>>
 

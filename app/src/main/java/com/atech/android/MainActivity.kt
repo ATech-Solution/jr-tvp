@@ -53,8 +53,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     private fun mainVisibilityCheck(destination: NavDestination): Boolean {
         return destination.id in listOf(
             R.id.homeFragment,
-            R.id.profileFragment,
-            R.id.dialogClassroomDetailFragment
+            R.id.profileFragment
         )
     }
 

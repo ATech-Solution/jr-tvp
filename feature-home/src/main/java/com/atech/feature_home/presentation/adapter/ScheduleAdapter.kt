@@ -2,6 +2,7 @@ package com.atech.feature_home.presentation.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.atech.domain.entities.SchedulesModel
@@ -10,6 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ScheduleAdapter(
+    private val isStudent: Boolean,
     private val onClickItem: (SchedulesModel) -> Unit
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -36,12 +38,9 @@ class ScheduleAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as ScheduleItemViewHolder).bind(data[position])
-        holder.itemScheduleBinding.root.setOnClickListener {
-            onClickItem.invoke(data[position])
-        }
     }
 
-    inner class ScheduleItemViewHolder(val itemScheduleBinding: ItemScheduleBinding) :
+    inner class ScheduleItemViewHolder(private val itemScheduleBinding: ItemScheduleBinding) :
         RecyclerView.ViewHolder(itemScheduleBinding.root) {
 
         @SuppressLint("SetTextI18n")
@@ -50,6 +49,17 @@ class ScheduleAdapter(
                 model.start_time,
                 model.finish_time
             )
+            itemScheduleBinding.btnTakeAttendance.apply {
+                visibility = if (isStudent) {
+                    View.GONE
+                } else {
+                    View.VISIBLE
+                }
+
+                setOnClickListener {
+                    onClickItem.invoke(model)
+                }
+            }
         }
 
     }

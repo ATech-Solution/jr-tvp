@@ -14,26 +14,32 @@
             app:argType="string" />
 
         <action
-            android:id="@+id/action_homeFragment_to_dialogClassroomDetailFragment"
-            app:destination="@id/dialogClassroomDetailFragment" />
+            android:id="@+id/action_homeFragment_to_classroomDetailFragment"
+            app:destination="@id/classroomDetailFragment" />
 
     </fragment>
 
     <fragment
         android:id="@+id/qrScannerFragment"
         android:name="com.atech.feature_home.presentation.fragment.QrScannerFragment"
-        android:label="QrScannerFragment" />
+        android:label="QrScannerFragment" >
+
+        <argument
+            android:name="scheduleId"
+            android:defaultValue="0"
+            app:argType="integer" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/qrGeneratorFragment"
         android:name="com.atech.feature_home.presentation.fragment.QrGeneratorFragment"
         android:label="QrGeneratorFragment" />
 
-    <dialog
-        android:id="@+id/dialogClassroomDetailFragment"
-        android:name="com.atech.feature_home.presentation.fragment.DialogClassroomDetailFragment"
-        android:label="DialogClassroomDetailFragment" >
-
+    <fragment
+        android:id="@+id/classroomDetailFragment"
+        android:name="com.atech.feature_home.presentation.fragment.ClassroomDetailFragment"
+        android:label="ClassroomDetailFragment" >
         <argument
             android:name="schedule"
             android:defaultValue="@null"
@@ -41,13 +47,14 @@
             app:argType="com.atech.domain.entities.ClassScheduleModelItem" />
 
         <action
-            android:id="@+id/action_dialogClassroomDetailFragment_to_qrGeneratorFragment"
+            android:id="@+id/action_classroomDetailFragment_to_qrGeneratorFragment"
             app:destination="@id/qrGeneratorFragment" />
 
         <action
-            android:id="@+id/action_dialogClassroomDetailFragment_to_qrScannerFragment"
+            android:id="@+id/action_classroomDetailFragment_to_qrScannerFragment"
             app:destination="@id/qrScannerFragment" />
 
-    </dialog>
+    </fragment>
+
 
 </navigation>

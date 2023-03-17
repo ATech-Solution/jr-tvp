@@ -57,4 +57,13 @@ object HomeUseCaseModule {
     ): GetProfile {
         return GetProfile(repository, postExecutionThread)
     }
+
+    @Provides
+    @ViewModelScoped
+    fun providePostQrCode(
+        repository: JrRepository,
+        postExecutionThread: PostExecutionThread
+    ): PostQrCode {
+        return PostQrCode(repository, postExecutionThread)
+    }
 }

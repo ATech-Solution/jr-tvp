@@ -36,6 +36,10 @@ class DataSourceImpl @Inject constructor(
         return api.showQrCode()
     }
 
+    override fun scanQrCode(scanQrCodeDto: ScanQrCodeDto): Flowable<BaseResponseDto<MessageDto>> {
+        return api.scanQrCode(scanQrCodeDto)
+    }
+
     override fun getProfile(): Flowable<BaseResponseDto<ProfileDto>> {
         return api.getProfile()
     }

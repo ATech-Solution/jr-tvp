@@ -32,6 +32,12 @@ class ProfileViewModel @Inject constructor(
 
     private fun getProfile() {
         _profileResponse.value = ResultState.Loading()
+        sessionHelper.getObject(
+            SessionHelper.USER_PROFILE,
+            ProfileModel::class.java
+        )?.let {
+            _profileResponse.value = ResultState.Success(it)
+        }
         getProfile.execute(
             object : DefaultSubscriber<ProfileModel>() {
                 override fun onError(error: ResultState<ProfileModel>) {

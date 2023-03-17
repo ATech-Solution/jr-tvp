@@ -6,7 +6,11 @@ import android.view.View
 import android.widget.Toast
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
+import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.atech.base.BaseFragment
 import com.atech.base.viewmodel.BaseViewModel
 import com.atech.domain.subscriber.ResultState
@@ -42,6 +46,18 @@ class QrGeneratorFragment : BaseFragment<FragmentQrGeneratorBinding, BaseViewMod
 
     override fun onInitObservers() {
         super.onInitObservers()
+        val callback: OnBackPressedCallback = object :
+            OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                setFragmentResult(
+                    ClassroomDetailFragment.REQUEST_KEY,
+                    bundleOf(Pair(ClassroomDetailFragment.REQUEST_KEY, true))
+                )
+                findNavController().popBackStack()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+
         viewModel.qrResponse.observe(viewLifecycleOwner) {
             when(it) {
                 is ResultState.Success -> {

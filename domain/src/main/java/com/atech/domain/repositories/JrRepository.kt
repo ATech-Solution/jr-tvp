@@ -20,5 +20,7 @@ interface JrRepository {
 
     fun showQrCode(): Flowable<QrCodeModel>
 
+    fun scanQrCode(scheduleId: Int, qrCode: String): Flowable<MessageModel>
+
     fun getProfile(): Flowable<ProfileModel>
 }

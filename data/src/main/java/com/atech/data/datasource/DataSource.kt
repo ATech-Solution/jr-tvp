@@ -16,5 +16,7 @@ interface DataSource {
 
     fun showQrCode(): Flowable<BaseResponseDto<QrCodeDto>>
 
+    fun scanQrCode(scanQrCodeDto: ScanQrCodeDto): Flowable<BaseResponseDto<MessageDto>>
+
     fun getProfile(): Flowable<BaseResponseDto<ProfileDto>>
 }

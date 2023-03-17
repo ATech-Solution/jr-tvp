@@ -3,31 +3,37 @@ package com.atech.feature_home.presentation.fragment
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.util.DisplayMetrics
+import android.graphics.Rect
+import android.graphics.RectF
+import android.view.View
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.atech.base.BaseFragment
 import com.atech.base.viewmodel.BaseViewModel
+import com.atech.domain.subscriber.ResultState
 import com.atech.feature_home.databinding.FragmentQrScannerBinding
+import com.atech.feature_home.presentation.view.BarcodeBoxView
 import com.atech.feature_home.presentation.viewmodel.QrScannerViewModel
+import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanner
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.scopes.FragmentScoped
 import timber.log.Timber
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 
 @FragmentScoped
 @AndroidEntryPoint
-class QrScannerFragment : BaseFragment<FragmentQrScannerBinding, BaseViewModel>() {
+class QrScannerFragment : BaseFragment<FragmentQrScannerBinding, BaseViewModel>(), ImageAnalysis.Analyzer {
 
     override val viewModel: QrScannerViewModel by viewModels()
 
@@ -35,143 +41,123 @@ class QrScannerFragment : BaseFragment<FragmentQrScannerBinding, BaseViewModel>(
         FragmentQrScannerBinding.inflate(layoutInflater)
     }
 
-    private lateinit var cameraProvider: ProcessCameraProvider
-    private lateinit var cameraSelector: CameraSelector
-    private var cameraUseCase: Preview? = null
-    private var analysisUseCase: ImageAnalysis? = null
-    @Suppress("deprecation")
-    private val screenAspectRatio: Int
-        get() {
-            // Get screen metrics used to setup camera for full screen resolution
-            val metrics = DisplayMetrics().also { binding.previewView.display?.getRealMetrics(it) }
-            return aspectRatio(metrics.widthPixels, metrics.heightPixels)
-        }
+    private lateinit var cameraExecutor: ExecutorService
 
-    private fun aspectRatio(width: Int, height: Int): Int {
-        val previewRatio = max(width, height).toDouble() / min(width, height)
-        if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
-            return AspectRatio.RATIO_4_3
+    private val args: QrScannerFragmentArgs by navArgs()
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            startCamera()
+        } else {
+            Timber.tag(TAG).e("no camera permission")
         }
-        return AspectRatio.RATIO_16_9
+    }
+
+    private var scaleX = 1f
+    private var scaleY = 1f
+
+    private fun translateX(x: Float) = x * scaleX
+    private fun translateY(y: Float) = y * scaleY
+
+    private val barcodeBoxView by lazy {
+        BarcodeBoxView(requireContext())
     }
 
     override fun onInitViews() {
         super.onInitViews()
         if (isCameraPermissionGranted()) {
-            setupCamera()
+            startCamera()
         } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.CAMERA),
-                PERMISSION_CAMERA_REQUEST
-            )
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 
-    override fun onInitObservers() {
-        super.onInitObservers()
-    }
+    private fun startCamera() {
+        cameraExecutor = Executors.newSingleThreadExecutor()
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
 
-    private fun setupCamera() {
-        val lensFacing = CameraSelector.LENS_FACING_BACK
-        cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
-        viewModel.processCameraProvider.observe(this) {
-            cameraProvider = it
-            if (isCameraPermissionGranted()) {
-                bindCameraUseCases()
-            } else {
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    arrayOf(Manifest.permission.CAMERA),
-                    PERMISSION_CAMERA_REQUEST
+            // Preview
+            val preview = Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(binding.previewView.surfaceProvider)
+                }
+
+            // Image analyzer
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .also {
+                    it.setAnalyzer(cameraExecutor, this)
+                }
+
+            // Select back camera as a default
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            try {
+                // Unbind use cases before rebinding
+                cameraProvider.unbindAll()
+
+                // Bind use cases to camera
+                cameraProvider.bindToLifecycle(
+                    this, cameraSelector, preview, imageAnalyzer
                 )
+
+            } catch (exc: Exception) {
+                exc.printStackTrace()
             }
-        }
+        }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-    private fun bindCameraUseCases() {
-        bindPreviewUseCase()
-        bindAnalyzeUseCase()
-    }
-
-    private fun bindPreviewUseCase() {
-        if (!::cameraProvider.isInitialized) {
-            return
-        }
-        if (cameraUseCase != null) {
-            cameraProvider.unbind(cameraUseCase)
-        }
-
-        cameraUseCase = Preview.Builder()
-            .setTargetAspectRatio(screenAspectRatio)
-            .setTargetRotation(binding.previewView.display.rotation)
-            .build()
-        cameraUseCase?.setSurfaceProvider(binding.previewView.createSurfaceProvider())
-
-        try {
-            cameraProvider.bindToLifecycle(this,
-                cameraSelector,
-                cameraUseCase
-            )
-        } catch (illegalStateException: IllegalStateException) {
-            Timber.tag(TAG).e(illegalStateException.message.orEmpty())
-        } catch (illegalArgumentException: IllegalArgumentException) {
-            Timber.tag(TAG).e(illegalArgumentException.message.orEmpty())
-        }
-    }
-
-    private fun bindAnalyzeUseCase() {
-        val barcodeScanner: BarcodeScanner = BarcodeScanning.getClient()
-        if (!::cameraProvider.isInitialized) {
-            return
-        }
-        if (analysisUseCase != null) {
-            cameraProvider.unbind(analysisUseCase)
-        }
-
-        analysisUseCase = ImageAnalysis.Builder()
-            .setTargetAspectRatio(screenAspectRatio)
-            .setTargetRotation(binding.previewView.display.rotation)
-            .build()
-
-        // Initialize our background executor
-        val cameraExecutor = Executors.newSingleThreadExecutor()
-
-        analysisUseCase?.setAnalyzer(
-            cameraExecutor
-        ) { imageProxy ->
-            processImageProxy(barcodeScanner, imageProxy)
-        }
-
-        try {
-            cameraProvider.bindToLifecycle(
-                this,
-                cameraSelector,
-                analysisUseCase
-            )
-        } catch (illegalStateException: IllegalStateException) {
-            Timber.tag(TAG).e(
-                illegalStateException.message ?: "IllegalStateException"
-            )
-        } catch (illegalArgumentException: IllegalArgumentException) {
-            Timber.tag(TAG).e(
-                illegalArgumentException.message ?: "IllegalArgumentException"
-            )
-        }
-    }
+    private fun adjustBoundingRect(rect: Rect) = RectF(
+        translateX(rect.left.toFloat()),
+        translateY(rect.top.toFloat()),
+        translateX(rect.right.toFloat()),
+        translateY(rect.bottom.toFloat())
+    )
 
     @SuppressLint("UnsafeOptInUsageError")
-    private fun processImageProxy(
-        barcodeScanner: BarcodeScanner,
-        imageProxy: ImageProxy
-    ) {
-        imageProxy.image?.let {
-            val inputImage = InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees)
+    override fun analyze(image: ImageProxy) {
+        image.image?.let {
+            val inputImage = InputImage.fromMediaImage(it, image.imageInfo.rotationDegrees)
+
+            val options = BarcodeScannerOptions.Builder()
+                .setBarcodeFormats(
+                    Barcode.FORMAT_QR_CODE
+                )
+                .build()
+            val barcodeScanner: BarcodeScanner = BarcodeScanning.getClient(options)
+
+            scaleX = binding.previewView.width.toFloat() / it.height.toFloat()
+            scaleY = binding.previewView.height.toFloat() / it.width.toFloat()
 
             barcodeScanner.process(inputImage)
                 .addOnSuccessListener { barcodes ->
-                    barcodes.forEach { code ->
-                        Timber.tag(TAG).d(code.rawValue.orEmpty())
+                    if (barcodes.isNotEmpty()) {
+                        barcodes.last().rawValue?.let { code ->
+                            if (binding.pbLoading.visibility == View.GONE) {
+                                viewModel.takeAttendance(
+                                    args.scheduleId,
+                                    code
+                                )
+                            }
+                        }
+
+                        barcodes.forEach { code ->
+                            code.boundingBox?.let { rect ->
+                                barcodeBoxView.setRect(
+                                    adjustBoundingRect(
+                                        rect
+                                    )
+                                )
+                            }
+                        }
+                    } else {
+                        barcodeBoxView.setRect(RectF())
                     }
                 }
                 .addOnFailureListener { ex ->
@@ -180,26 +166,9 @@ class QrScannerFragment : BaseFragment<FragmentQrScannerBinding, BaseViewModel>(
                     // When the image is from CameraX analysis use case, must call image.close() on received
                     // images when finished using them. Otherwise, new images may not be received or the camera
                     // may stall.
-                    imageProxy.close()
+                    image.close()
                 }
         }
-    }
-
-    @Suppress("deprecation")
-    @Deprecated("Deprecated in Java")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == PERMISSION_CAMERA_REQUEST) {
-            if (isCameraPermissionGranted()) {
-                bindCameraUseCases()
-            } else {
-                Timber.tag(TAG).e("no camera permission")
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun isCameraPermissionGranted(): Boolean {
@@ -209,10 +178,43 @@ class QrScannerFragment : BaseFragment<FragmentQrScannerBinding, BaseViewModel>(
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+    override fun onInitObservers() {
+        super.onInitObservers()
+        viewModel.qrResponse.observe(viewLifecycleOwner) {
+            when(it) {
+                is ResultState.Success -> {
+                    binding.pbLoading.visibility = View.GONE
+                    Toast.makeText(
+                        requireContext(),
+                        it.data.message,
+                        Toast.LENGTH_SHORT)
+                        .show()
+                }
+                is ResultState.Error -> {
+                    binding.pbLoading.visibility = View.GONE
+                    Toast.makeText(
+                        requireContext(),
+                        it.throwable.message,
+                        Toast.LENGTH_SHORT)
+                        .show()
+                }
+                is ResultState.Loading -> {
+                    binding.pbLoading.visibility = View.VISIBLE
+                }
+                else -> {
+                    // unhandled state
+                }
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdown()
+    }
+
     companion object {
         private val TAG = QrScannerFragment::class.java.simpleName
-        private const val PERMISSION_CAMERA_REQUEST = 1
-        private const val RATIO_4_3_VALUE = 4.0 / 3.0
-        private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }
+
 }

@@ -2,6 +2,7 @@ package com.atech.data.repositoriesimpl
 
 import com.atech.data.datasource.DataSource
 import com.atech.data.datasource.StubDataSource
+import com.atech.data.dtos.ScanQrCodeDto
 import com.atech.domain.entities.*
 import com.atech.domain.repositories.JrRepository
 import io.reactivex.Flowable
@@ -39,6 +40,12 @@ class RepositoryImpl @Inject constructor(
 
     override fun showQrCode(): Flowable<QrCodeModel> {
         return source.showQrCode().map { it.data.toModel() }
+    }
+
+    override fun scanQrCode(scheduleId: Int, qrCode: String): Flowable<MessageModel> {
+        return source.scanQrCode(
+            ScanQrCodeDto(qrCode, scheduleId)
+        ).map { it.data.toModel() }
     }
 
     override fun getProfile(): Flowable<ProfileModel> {

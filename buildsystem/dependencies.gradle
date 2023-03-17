@@ -33,9 +33,9 @@ ext {
             coreTesting       : '2.1.0',
             coroutinesTesting : '1.6.1',
             runner            : '1.4.0',
-            barcodeScanner    : '16.0.1',
-            cameraX           : '1.0.0-beta06',
-            cameraXView       : '1.0.0-alpha13',
+            barcodeScanner    : '17.0.0',
+            cameraX           : '1.0.1',
+            cameraXView       : '1.0.0-alpha28',
             qrGenerator       : '1.0.1'
     ]
 
@@ -148,8 +148,8 @@ ext {
              * */
             cameraX           : [
                     "androidx.camera:camera-camera2:${versions.cameraX}",
+                    "androidx.camera:camera-view:${versions.cameraXView}",
                     "androidx.camera:camera-lifecycle:${versions.cameraX}",
-                    "androidx.camera:camera-view:${versions.cameraXView}"
             ]
     ]
 

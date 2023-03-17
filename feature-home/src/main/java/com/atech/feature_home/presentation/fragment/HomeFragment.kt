@@ -35,7 +35,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, BaseViewModel>() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = ClassroomAdapter {
                 findNavController().navigate(
-                    HomeFragmentDirections.actionHomeFragmentToDialogClassroomDetailFragment(
+                    HomeFragmentDirections.actionHomeFragmentToClassroomDetailFragment(
                         it
                     )
                 )
@@ -53,7 +53,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, BaseViewModel>() {
         viewModel.profileResponse.observe(viewLifecycleOwner) {
             when(it) {
                 is ResultState.Success -> {
-                    binding.txtTitleName.text = "${it.data.name}"
+                    binding.txtTitleName.text = it.data.name
                     GlideHelper.showThumbnail(
                         it.data.avatar,
                         binding.imgProfile,

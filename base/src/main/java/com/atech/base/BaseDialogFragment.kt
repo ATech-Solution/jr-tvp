@@ -53,6 +53,8 @@ abstract class BaseDialogFragment<VB : ViewBinding, VM : ViewModel> : DialogFrag
         val colorDrawable = ColorDrawable(Color.TRANSPARENT)
         val inset = InsetDrawable(colorDrawable, 40)
         dialog?.window?.setBackgroundDrawable(inset)
+        dialog?.setCancelable(false)
+        dialog?.setCanceledOnTouchOutside(false)
         return binding.root
     }
 
