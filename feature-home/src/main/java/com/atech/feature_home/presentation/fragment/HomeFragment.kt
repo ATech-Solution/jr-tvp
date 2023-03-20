@@ -1,24 +1,23 @@
 package com.atech.feature_home.presentation.fragment
 
-import android.util.Log
+import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.atech.base.BaseActivity
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.atech.base.BaseFragment
+import com.atech.base.util.GlideHelper
 import com.atech.base.viewmodel.BaseViewModel
-import com.atech.feature_home.R
+import com.atech.domain.subscriber.ResultState
 import com.atech.feature_home.databinding.FragmentHomeBinding
-import com.atech.feature_home.presentation.view.HeaderView
-import com.atech.feature_home.presentation.view.SectionView
+import com.atech.feature_home.presentation.adapter.ClassroomAdapter
 import com.atech.feature_home.presentation.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.scopes.FragmentScoped
 
 @FragmentScoped
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding, BaseViewModel>(),
-    SwipeRefreshLayout.OnRefreshListener,
-    SectionView.OnDoneLoading, HeaderView.OnDoneLoading {
+class HomeFragment : BaseFragment<FragmentHomeBinding, BaseViewModel>() {
 
     override val viewModel: HomeViewModel by viewModels()
 
@@ -26,52 +25,81 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, BaseViewModel>(),
         FragmentHomeBinding.inflate(layoutInflater)
     }
 
-    // private val args: HomeFragmentArgs by navArgs()
-
     override fun onInitViews() {
         super.onInitViews()
-        (activity as BaseActivity<*, *>).setSupportActionBar(binding.toolbar)
-
-        val supportActionBar = (activity as BaseActivity<*, *>).supportActionBar
-        supportActionBar?.title = getString(R.string.app_name)
+        initRecyclerViewAdapter()
     }
 
+    private fun initRecyclerViewAdapter() {
+        binding.rvClass.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = ClassroomAdapter {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToClassroomDetailFragment(
+                        it
+                    )
+                )
+            }
+        }
+
+        binding.swRefreshClass.setOnRefreshListener {
+            viewModel.checkLoginState()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     override fun onInitObservers() {
         super.onInitObservers()
-        initListener()
-        fetchData()
-        Log.d("MainFragment", "onInitObserver")
+        viewModel.profileResponse.observe(viewLifecycleOwner) {
+            when(it) {
+                is ResultState.Success -> {
+                    binding.txtTitleName.text = it.data.name
+                    GlideHelper.showThumbnail(
+                        it.data.avatar,
+                        binding.imgProfile,
+                        requireContext()
+                    )
+                }
+                is ResultState.Error -> {
+                    Toast.makeText(
+                        requireContext(),
+                        it.throwable.message,
+                        Toast.LENGTH_SHORT)
+                        .show()
+                }
+                else -> {
+                    //unhandled state
+                }
+            }
+        }
+
+        viewModel.classResponse.observe(viewLifecycleOwner) {
+            when(it) {
+                is ResultState.Success -> {
+                    showLoading(false)
+                    (binding.rvClass.adapter as ClassroomAdapter)
+                        .updateData(it.data)
+                }
+                is ResultState.Error -> {
+                    showLoading(false)
+                    Toast.makeText(
+                        requireContext(),
+                        it.throwable.message,
+                        Toast.LENGTH_SHORT)
+                        .show()
+                }
+                is ResultState.Loading -> {
+                    showLoading(true)
+                }
+                else -> {
+                    //unhandled state
+                }
+            }
+        }
     }
 
-    private fun initListener() {
-        binding.refresh.setOnRefreshListener(this)
-        binding.headerView.homeViewModel = viewModel
-        binding.favoriteView.homeViewModel = viewModel
-        binding.topRatedView.homeViewModel = viewModel
-        binding.popularView.homeViewModel = viewModel
-
-        binding.headerView.doneLoadingListener = this
-        binding.favoriteView.doneLoadingListener = this
-        binding.topRatedView.doneLoadingListener = this
-        binding.popularView.doneLoadingListener = this
+    private fun showLoading(show: Boolean) {
+        binding.swRefreshClass.isRefreshing = show
     }
 
-    private fun fetchData() = with(binding) {
-        headerView.fetchData(viewLifecycleOwner)
-        favoriteView.fetchData(viewLifecycleOwner)
-        topRatedView.fetchData(viewLifecycleOwner)
-        popularView.fetchData(viewLifecycleOwner)
-    }
-
-    override fun onRefresh() {
-        fetchData()
-    }
-
-    private fun hideLoading() {
-        binding.refresh.isRefreshing = false
-    }
-
-    override fun doneLoading() {
-        if (isAdded) hideLoading()
-    }
 }

@@ -19,3 +19,18 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# Models
+-keepclassmembers class software.atech.data.db.** {*;}
+-keepclassmembers class software.atech.data.dtos.** {*;}
+-keepclassmembers class software.atech.domain.entities.** {*;}
+-keepclassmembers class **.models.** {*;}
+
+# GSON
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+-keepnames class * extends android.os.Parcelable
+-keepnames class * extends java.io.Serializable

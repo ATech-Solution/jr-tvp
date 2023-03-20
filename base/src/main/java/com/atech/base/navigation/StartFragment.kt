@@ -13,7 +13,7 @@ class StartFragment : BaseFragment<FragmentStartBinding, BaseViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setSelectedTab(0)
+        (requireActivity() as ToFlowNavigable).navigateToFlow(NavigationFlow.AuthFlow("This is auth page"))
     }
 
     private fun setSelectedTab(selectedTab: Int) {

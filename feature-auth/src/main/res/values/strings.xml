@@ -1,0 +1,18 @@
+<resources>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="to_next_page">To Next Page</string>
+    <string name="to_profile_page">To Profile Page</string>
+    <string name="popular">Popular</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="favorite">Favorite</string>
+    <string name="movie_title">Title</string>
+    <string name="overview">Overview</string>
+    <string name="movie_date">Date</string>
+    <string name="movie_desc">Desc</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="upcoming">Coming Soon</string>
+    <string name="movie_review">Review :</string>
+    <string name="favorite_deleted">This Movie remove from Favorite List</string>
+    <string name="favorite_added">This Movie added into Favorite List</string>
+</resources>

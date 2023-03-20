@@ -3,6 +3,7 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 
     resolutionStrategy {
@@ -18,10 +19,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
 }
 
-rootProject.name = "Atech Android Starter"
+rootProject.name = "JR Dreamland"
 include ':app'
 include ':data'
 include ':domain'
@@ -30,3 +32,4 @@ include ':core-ui'
 include ':navigation'
 include ':feature-home'
 include ':feature-profile'
+include ':feature-auth'

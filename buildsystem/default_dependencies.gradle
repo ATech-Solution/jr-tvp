@@ -35,6 +35,13 @@ dependencies {
     debugImplementation libraries.chucker
     releaseImplementation libraries.chuckerNoOp
 
+    // Barcode scanner and generator
+    implementation libraries.barcodeScanner
+    implementation libraries.qrGenerator
+
+    // Camera X
+    implementation libraries.cameraX
+
     // Testing
     testImplementation testingLibraries.jUnit
     testImplementation testingLibraries.truth

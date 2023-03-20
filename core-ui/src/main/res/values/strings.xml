@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name_staging">Atech Android Starter STAGING</string>
-    <string name="app_name_dev">Atech Android Starter DEV</string>
-    <string name="app_name_prod">Atech Android Starter</string>
+    <string name="app_name_staging">JR Dreamland STAGING</string>
+    <string name="app_name_dev">JR Dreamland DEV</string>
+    <string name="app_name_prod">JR Dreamland</string>
 </resources>

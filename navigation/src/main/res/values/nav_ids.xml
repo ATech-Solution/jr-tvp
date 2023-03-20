@@ -2,5 +2,6 @@
 <resources>
     <item name="nav_graph_home" type="id" />
     <item name="nav_graph_profile" type="id" />
+    <item name="nav_graph_auth" type="id" />
     <item name="nav_graph_base_flow" type="id"/>
 </resources>

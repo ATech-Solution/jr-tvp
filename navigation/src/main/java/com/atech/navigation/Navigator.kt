@@ -18,5 +18,9 @@ class Navigator {
                 navigationFlow.title
             )
         )
+
+        is NavigationFlow.AuthFlow -> navController.navigate(
+            NavGraphMainDirections.actionGlobalNavGraphAuth()
+        )
     }
 }

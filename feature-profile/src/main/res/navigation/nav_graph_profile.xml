@@ -15,5 +15,13 @@
         <deepLink
             android:id="@+id/deepLink"
             app:uri="example://profile/exampleArgs?title={msg}" />
+
+        <action
+            android:id="@+id/action_nav_profile_to_auth"
+            app:destination="@id/nav_graph_auth"
+            app:popUpTo="@id/nav_graph_main"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+
     </fragment>
 </navigation>

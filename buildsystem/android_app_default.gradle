@@ -75,19 +75,19 @@ android {
         development {
             dimension "env"
             applicationIdSuffix '.dev'
-            resValue "string", "app_name", "@string/app_name_dev"
+            resValue "string", "app_name", "JR Dreamland DEV"
             buildConfigField("String", "API_BASE_URL", props.getProperty("env.dev.baseurl"))
             buildConfigField("String", "API_MOCK_BASE_URL", props.getProperty("env.dev.mockbaseurl"))
         }
         staging {
             dimension "env"
             applicationIdSuffix '.staging'
-            resValue "string", "app_name", "@string/app_name_staging"
+            resValue "string", "app_name", "JR Dreamland STAG"
             buildConfigField("String", "API_BASE_URL", props.getProperty("env.staging.baseurl"))
         }
         production {
             dimension "env"
-            resValue "string", "app_name", "@string/app_name_prod"
+            resValue "string", "app_name", "JR Dreamland DEV"
             buildConfigField("String", "API_BASE_URL", props.getProperty("env.prod.baseurl"))
         }
     }

@@ -15,5 +15,5 @@ import com.atech.domain.entities.MovieModel
 )
 @TypeConverters(AppTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun movieDao(): MovieDao
+    abstract fun jrDao(): JrDao
 }
